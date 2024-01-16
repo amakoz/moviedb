@@ -1,6 +1,5 @@
 <script lang="ts">
-import { defineComponent, Ref } from 'vue'
-// import { useInfiniteScroll } from "@vueuse/core";
+import { defineComponent } from 'vue'
 import { CategoriesTabs, MovieCard } from "@/app.organizer";
 import { TCategoryItem } from "@/types/movies";
 import { ROUTE_DASHBOARD_MOVIES_LIST } from "@/app.routes";

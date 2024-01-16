@@ -129,7 +129,7 @@ watch(currentRouteName, () => {
           <label class="inline-flex relative items-center cursor-pointer">
             <input
               type="checkbox"
-              :checked="App.theme.value === 'light' ? true : false"
+              :checked="App.theme.value === 'light'"
               @input="
                 () =>
                   App.setTheme(App.theme.value === 'light' ? 'dark' : 'light')

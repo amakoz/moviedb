@@ -1,4 +1,4 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
+import { defineStore } from "pinia";
 import useApi from '@composables/useApi';
 import { TMovieData } from "@/types/movies";
 import { LOCALSTORAGE_MOVIES_FAVORITES } from "@/app.storages";
@@ -42,8 +42,7 @@ export const useMoviesStore = defineStore({
                 if (response.isSuccess) {
                     if (page <= this.currentPage) this.moviesGenres = response.data.results;
                     else this.moviesGenres = this.moviesGenres.concat(response.data.results);
-                    if (response.data.total_pages === page) this.end = true;
-                    else this.end = false;
+                    this.end = response.data.total_pages === page;
 
                     this.currentPage = page;
                 }

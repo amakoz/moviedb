@@ -2,9 +2,9 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useMeta } from "vue-meta";
-import { LayoutDashboard, ViewDashboardIndex } from "../app.organizer";
+import { LayoutDashboard, ViewDashboardIndex } from "@/app.organizer";
 
-import { ROUTE_DASHBOARD } from "../app.routes";
+import { ROUTE_DASHBOARD } from "@/app.routes";
 
 useMeta({
   title: "Viously",

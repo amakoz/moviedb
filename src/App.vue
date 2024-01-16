@@ -14,19 +14,3 @@ provide("App", App);
     <router-view />
   </div>
 </template>
-
-<style>
-.slide-fade-enter-active {
-  opacity: 0;
-  z-index: 10;
-}
-
-.slide-fade-leave-active {
-  opacity: 0.3;
-}
-
-.slide-fade-enter,
-.slide-fade-leave-to {
-  opacity: 0;
-}
-</style>
