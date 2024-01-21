@@ -58,7 +58,7 @@ const end = computed(() => {
 });
 
 const getGenres = (genre: number[], page: number = 1) =>
-  storeMovies.value.getGenres(genre, page);
+  storeMovies.value.fetchGenres(genre, page);
 const getCategory = (name: string): TCategoryItem | undefined =>
   categories.value.find((category) => category.name === name);
 

@@ -1,100 +1,68 @@
 import { defineStore } from "pinia";
-import useApi from '@composables/useApi';
+import { useGenresComposable } from "@composables/useGenresComposable";
+import { useTrendsComposable } from "@composables/useTrendsComposable";
+import { useFavoritesComposable } from "@composables/useFavoritesComposable";
 import { TMovieData } from "@/types/movies";
-import { LOCALSTORAGE_MOVIES_FAVORITES } from "@/app.storages";
+import { ref } from "vue";
 
-import { GET_MOVIES_GENRES, GET_MOVIES_POPULAR } from './movies.api'
+export const useMoviesStore = defineStore("movies", () => {
+  const { getGenres } = useGenresComposable();
+  const { getTrends } = useTrendsComposable();
+  const { favorites, addFavorite, removeFavorite, loadFavorites } =
+    useFavoritesComposable();
 
-export const useMoviesStore = defineStore({
-    id: "movies",
+  const moviesGenres = ref<TMovieData[]>([]);
+  const moviesTrends = ref<TMovieData[]>([]);
+  const loading = ref(false);
+  const currentPage = ref(1);
+  const end = ref(false);
 
-    state: () => ({
-        favorites: localStorage.getItem(LOCALSTORAGE_MOVIES_FAVORITES)
-            ? (JSON.parse(
-                localStorage.getItem(LOCALSTORAGE_MOVIES_FAVORITES) as string
-            ) as TMovieData[])
-            : ([] as TMovieData[]),
-        moviesTrends: [],
-        moviesGenres: [],
-        error: '',
-        loading: false,
-        currentPage: 1,
-        end: false,
-    }),
+  const fetchGenres = async (genre: number[], page: number) => {
+    loading.value = true;
+    try {
+      const response = await getGenres(genre, page);
+      if (response.isSuccess) {
+        moviesGenres.value =
+          page <= currentPage.value
+            ? response.data.results
+            : moviesGenres.value.concat(response.data.results);
+        end.value = response.data.total_pages === page;
+        currentPage.value = page;
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      loading.value = false;
+    }
+  };
 
-    actions: {
-        /**
-         * Get Movies genres
-         * @param genre
-         * @param page
-         */
-        async getGenres(genre: number[], page: number = 1) {
+  const fetchTrends = async () => {
+    loading.value = true;
+    try {
+      const response = await getTrends();
+      if (response.isSuccess) {
+        moviesTrends.value = response.data.results.slice(0, 4);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      loading.value = false;
+    }
+  };
 
-            try {
-                this.loading = true;
-                const response = await useApi(GET_MOVIES_GENRES, {
-                    query: {
-                        with_genres: !genre.includes(0) ? genre.join("|") : null,
-                        page: page,
-                    }
-                })
+  // Initialize favorites from localStorage on store creation
+  loadFavorites();
 
-                if (response.isSuccess) {
-                    if (page <= this.currentPage) this.moviesGenres = response.data.results;
-                    else this.moviesGenres = this.moviesGenres.concat(response.data.results);
-                    this.end = response.data.total_pages === page;
-
-                    this.currentPage = page;
-                }
-                this.loading = false;
-            } catch (e) {
-                console.error(e);
-            }
-
-
-        },
-        /**
-         * Get movies trends
-         */
-        async getTrends() {
-            try {
-                this.loading = true;
-
-                const response = await useApi(GET_MOVIES_POPULAR);
-
-                if (response.isSuccess) {
-                    this.moviesTrends = response.data.results.slice(0, 4);
-                }
-                this.loading = false;
-            }
-            catch(e) {
-                console.error(e);
-            }
-
-        },
-        /**
-         * Add to favorites
-         * @param movie
-         */
-        addFavorite(movie: TMovieData) {
-            this.favorites.push(movie);
-            localStorage.setItem(
-                LOCALSTORAGE_MOVIES_FAVORITES,
-                JSON.stringify(this.favorites)
-            );
-        },
-        /**
-         * Remove from favorites
-         * @param movie
-         */
-        removeFavorite(movie: TMovieData) {
-            this.favorites = this.favorites.filter(
-                (e: TMovieData) => e.id !== movie.id
-            );
-            localStorage.setItem(
-                LOCALSTORAGE_MOVIES_FAVORITES,
-                JSON.stringify(this.favorites)
-            );
-        },
-    },
+  return {
+    favorites,
+    addFavorite,
+    removeFavorite,
+    fetchGenres,
+    fetchTrends,
+    moviesGenres,
+    moviesTrends,
+    loading,
+    currentPage,
+    end,
+  };
 });

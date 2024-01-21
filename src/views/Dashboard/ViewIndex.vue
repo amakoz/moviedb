@@ -5,10 +5,10 @@ import { useMoviesStore } from "@/stores/movies";
 
 const backgroundImage = ref("");
 
-const storeMovies =  useMoviesStore();
+const storeMovies = useMoviesStore();
 
-const movies = computed(() => storeMovies.moviesTrends)
-const getTrends = storeMovies.getTrends;
+const movies = computed(() => storeMovies.moviesTrends);
+const getTrends = storeMovies.fetchTrends;
 
 const updateBackgroundImage = (imagePath: string) => {
   backgroundImage.value = imagePath;
