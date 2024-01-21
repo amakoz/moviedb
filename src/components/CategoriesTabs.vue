@@ -58,7 +58,7 @@ const changeSelector = (event: Event) => {
           @change="changeSelector"
           class="select shadow w-64 text-center font-bold border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
-          <option v-for="item in props.items">
+          <option v-for="item in props.items" :key="item.name + item.value">
             {{ item.name }}
           </option>
         </select>

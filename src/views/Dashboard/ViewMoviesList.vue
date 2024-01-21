@@ -6,7 +6,11 @@ import { ROUTE_DASHBOARD_MOVIES_LIST } from "@/app.routes";
 import { useMoviesStore } from "@/stores/movies";
 import { useRoute, useRouter } from "vue-router";
 
-const CATEGORIES_LIST = [
+interface ScrollTarget {
+  target: HTMLElement;
+}
+
+const CATEGORIES_LIST: Array<TCategoryItem> = [
   {
     name: "All",
     value: [28, 16, 12, 35, 99],
@@ -53,12 +57,10 @@ const end = computed(() => {
   return storeMovies.value.end;
 });
 
-const getGenres = (genre: number[], page: number = 1) => {
-  return storeMovies.value.getGenres(genre, page);
-};
-const getCategory = (name: string): TCategoryItem | undefined => {
-  return categories.value.find((category) => category.name === name);
-};
+const getGenres = (genre: number[], page: number = 1) =>
+  storeMovies.value.getGenres(genre, page);
+const getCategory = (name: string): TCategoryItem | undefined =>
+  categories.value.find((category) => category.name === name);
 
 const onChangeTab = (tab: TCategoryItem): void => {
   router.push({
@@ -69,18 +71,17 @@ const onChangeTab = (tab: TCategoryItem): void => {
   getGenres(tab.value, 1);
 };
 
-const handleScroll = async (event: any) => {
-  const { target } = event;
-  if (
+const handleScroll = async (event: UIEvent): Promise<void> => {
+  const { target } = event as unknown as ScrollTarget;
+  const scrollThreshold =
     target.scrollTop + target.clientHeight >=
-    target.scrollHeight - 400 * currentPage.value
-  ) {
-    if (!end.value && !isLoadingNextPage.value) {
-      isLoadingNextPage.value = true;
-      const category = currentTab.value || null;
-      if (category) await getGenres(category.value, currentPage.value + 1);
-      isLoadingNextPage.value = false;
-    }
+    target.scrollHeight - 400 * currentPage.value;
+
+  if (scrollThreshold && !end.value && !isLoadingNextPage.value) {
+    isLoadingNextPage.value = true;
+    const category = currentTab.value || null;
+    if (category) await getGenres(category.value, currentPage.value + 1);
+    isLoadingNextPage.value = false;
   }
 };
 
