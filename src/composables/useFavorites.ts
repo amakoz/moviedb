@@ -1,7 +1,7 @@
 import { TMovieData } from "@/types/movies";
 import { ref, watch } from "vue";
 
-export function useFavoritesComposable() {
+export function useFavorites() {
   const favorites = ref<TMovieData[]>([]);
 
   const addFavorite = (movie: TMovieData) => {

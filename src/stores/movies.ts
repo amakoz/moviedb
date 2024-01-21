@@ -1,15 +1,15 @@
 import { defineStore } from "pinia";
-import { useGenresComposable } from "@composables/useGenresComposable";
-import { useTrendsComposable } from "@composables/useTrendsComposable";
-import { useFavoritesComposable } from "@composables/useFavoritesComposable";
+import { useGenres } from "@composables/useGenres";
+import { useTrends } from "@composables/useTrends";
+import { useFavorites } from "@composables/useFavorites";
 import { TMovieData } from "@/types/movies";
 import { ref } from "vue";
 
 export const useMoviesStore = defineStore("movies", () => {
-  const { getGenres } = useGenresComposable();
-  const { getTrends } = useTrendsComposable();
+  const { getGenres } = useGenres();
+  const { getTrends } = useTrends();
   const { favorites, addFavorite, removeFavorite, loadFavorites } =
-    useFavoritesComposable();
+    useFavorites();
 
   const moviesGenres = ref<TMovieData[]>([]);
   const moviesTrends = ref<TMovieData[]>([]);
