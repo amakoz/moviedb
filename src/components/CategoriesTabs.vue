@@ -4,7 +4,7 @@ import { TCategoryItem } from "@/types/movies";
 
 const props = defineProps<{
   items: TCategoryItem[];
-  value: TCategoryItem | undefined;
+  value?: TCategoryItem | null;
 }>();
 
 const emit = defineEmits<{
@@ -12,7 +12,7 @@ const emit = defineEmits<{
 }>();
 
 const currentValue: Ref<string> = ref(
-  props.value ? props.value.name : props.items[0].name
+  props.value ? props.value.name : props.items[0].name,
 );
 
 const isSelected = (name: string): boolean => {
@@ -28,8 +28,8 @@ const changeSelector = (event: Event) => {
   const target = event.target as HTMLInputElement;
   changeTab(
     props.items.find(
-      (e) => target && e.name === (target.value as string)
-    ) as TCategoryItem
+      (e) => target && e.name === (target.value as string),
+    ) as TCategoryItem,
   );
 };
 </script>
